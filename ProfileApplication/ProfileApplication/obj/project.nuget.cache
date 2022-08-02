@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "M5PsLXLShIZyh7bGjHxH6pg8QjprYFqRE+GW21DcU7GWJK/Mq41QJ8yJbqrq9mlvhYxrp7qYcWfPdKE24y8ZhQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\msham\\Development\\ProfileApp\\ProfileApplication\\ProfileApplication\\ProfileApplication.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\msham\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.15.1\\microsoft.visualstudio.azure.containers.tools.targets.1.15.1.nupkg.sha512"
+  ],
+  "logs": []
+}
