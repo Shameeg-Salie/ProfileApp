@@ -9,15 +9,20 @@ namespace ProfileApplication.Controllers
     [Route("Api/[controller]")]
     public class UserController : Controller
     {
+
         private readonly UserDbContext userDbContext;
-        public UserController(UserDbContext userDbContext) { 
-
+        public UserController(UserDbContext userDbContext) {
             this.userDbContext = userDbContext;
-
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAllUsers() {
-            return Ok(await userDbContext.Users.ToListAsync());
+            var users = await userDbContext.Users.FromSqlRaw("Select * from users").ToListAsync();
+
+            if (users == null) {
+                return NotFound();
+            }
+            return Ok(users);
         }
 
         [HttpGet]
@@ -25,9 +30,8 @@ namespace ProfileApplication.Controllers
         [ActionName("GetUsersByUsername")]
         public async Task<IActionResult> GetUsersByUsername([FromRoute] string Username)
         {
-            var user = await userDbContext.Users.FirstOrDefaultAsync(x => x.Username == Username);
-
-            //var user = await userDbContext.Users.FindAsync(Username);
+            var user = await userDbContext.Users.FromSqlRaw(
+                "Select * FROM users WHERE username = {0}", Username).ToListAsync();
 
             if (user == null) {
                 return NotFound();
@@ -37,11 +41,33 @@ namespace ProfileApplication.Controllers
 
         [HttpPost]
         public async Task<IActionResult> AddUser(User user) {
-            //user.Id = 0;
+
             await userDbContext.Users.AddAsync(user);
             await userDbContext.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetUsersByUsername), new { Username = user.Username }, user);
+        }
+
+        [HttpPut]
+        [Route("{username}")]
+        public async Task<IActionResult> UpdateUserInfo([FromRoute] string Username, [FromBody] User updatedInfo) {
+
+            var currentUserInfo = await userDbContext.Users.FromSqlRaw(
+                "Select * FROM users WHERE username = {0}", Username).ToListAsync();
+
+            if (currentUserInfo == null) {
+                return NotFound();
+            }
+
+            for (int i = 0; i < currentUserInfo.Count; i++) {
+                currentUserInfo[i].Username = updatedInfo.Username;
+                currentUserInfo[i].About = updatedInfo.About;
+            }
+
+            await userDbContext.SaveChangesAsync();
+
+            return Ok(currentUserInfo);
+
         }
     }
 }

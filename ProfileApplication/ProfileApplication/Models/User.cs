@@ -8,8 +8,6 @@
 
         public string About { get; set; }
 
-        public string Project { get; set; }
-
-        public string ProjectDescription { get; set; }
+        public string ProjectId { get; set; }
     }
 }
